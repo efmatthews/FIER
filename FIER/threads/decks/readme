@@ -1,0 +1,2 @@
+This folder holds the temporary decks created by FIER MonteCarlo.
+Each processor then uses the deck to run its own instance of FIER for concurrent operation.

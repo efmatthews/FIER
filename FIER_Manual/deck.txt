@@ -1,0 +1,21 @@
+MODE:SINGLE
+ON DECAY PREDICTION
+input_data/isotopes.csv     ISOTOPES FILE
+input_data/decays.csv       DECAYS   FILE
+input_data/gammas.csv       GAMMAS   FILE
+YIELDS:ER
+U,235,fission               YIELDS   FILE
+output/decay_chains.csv     CHAINS   OUTPUT
+output/decay_stems.csv 	    STEMS    OUTPUT
+output/populations.csv      POPS     OUTPUT
+output/gamma_output.csv     GAMMAS   OUTPUT
+output/err_log.txt          ERROR    LOG
+INITIALIZE
+IRRADIATION
+1e-6,1e30
+POPULATIONS
+5e-6
+10e-6
+COUNTS
+1e-6,2000
+END

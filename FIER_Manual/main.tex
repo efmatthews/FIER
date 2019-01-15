@@ -1,0 +1,403 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{appendix}
+\usepackage{color}
+\usepackage{listings} 
+\lstset
+{
+    basicstyle=\ttfamily,
+    numbers=left,
+    stepnumber=1,
+    breaklines=true,
+    breakatwhitespace=false,
+}
+
+\title{FIER: Software for Analytical Modeling of Delayed Gamma-Ray Spectra\\ ~\\Installation Guide and Reference Manual}
+\author{
+M. Shinner, E.F. Matthews, B.L. Goldblum\\
+University of California, Berkeley
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{General Description and Physics}
+The FIER (Fission Induced Electromagnetic Response) code is a C\texttt{++} program designed to predict delayed $\gamma$-ray spectra following fission. Given a fissioning isotope and irradiation scheme, FIER will determine the decay chains for each fission fragment and their daughters. Each product's time-dependent population is calculated using an analytical solution to the Bateman equations that guide decay transmutation \cite{bateman}. These populations are then used to calculate the number of $\gamma$-ray emissions for a given counting scheme \cite{fierpaper}. A Monte Carlo method is also available to determine the uncertainty of the fission product populations and delayed $\gamma$-ray intensities based on the uncertainties on the input nuclear data. 
+
+
+
+\section{Files}
+The FIER program is contained in the \textit{main.cpp} file with \texttt{C++} classes separated into header and implementation files. The folder \textit{input\_data} contains three required nuclear data libraries (distilled from ENDF File-8) \cite{endf}. The folder \textit{yields} holds NNDC SIGMA independent fission yield data \cite{SIGMA}. The input libraries and fission yield data are described further in Appendix~\ref{libraries}.
+\\
+\\
+If running FIER using \texttt{make} (highly recommended), the makefile is located in the same (parent) directory as \textit{main.cpp}. The default input deck is named \textit{deck.txt}. Details on input deck construction are provided in Appendix~\ref{inputdeck}. The output of FIER will be placed in a folder labeled \textit{output} if the default deck configuration is used (see Appendix~\ref{outputfiles}).  \textbf{If the output folder is missing or the custom output location doesn't yet exist, FIER will not write the output to disk. Users must create any custom directories}. The folder \textit{testing} contains files used in the included integrity test. Only modify these if you wish to create your own tests.
+
+
+\section{Prerequisites}
+
+The following are required to run FIER:
+\begin{itemize}
+    \item \texttt{C++11} or higher, and
+    \item the \texttt{g++} compiler.
+\end{itemize}
+In addition, these tools are highly recommended:
+\begin{itemize}
+    \item \texttt{make}, to run the make file,
+    \item \texttt{git}, to pull code from the repository,
+    \item \texttt{doxygen} and \texttt{graphviz}, to compile documentation, and
+    \item a Bourne-compatible shell, to run the multiprocess Monte Carlo analysis.
+\end{itemize}
+
+
+\section{Setup and Execution}
+
+\noindent Once you have cloned the FIER repository, the makefile can be used to build, run, and test FIER on your system. To run FIER:
+
+\begin{enumerate}
+    \item Edit the input deck (\textit{deck.txt}) with your desired input parameters. See Appendix~\ref{inputdeck} for details. 
+  %  \item On the line below \textbf{YIELDS:ER} replace the ordered triple with the isotope you wish to model, in the format: \textbf{Elemental Symbol,Atomic Number,Energy Group} without spaces. This is detailed further in Appendix~\ref{Yields}. A reference of all included isotope yields can also be found in Appendix~\ref{Yields}.
+    \item Run \texttt{\$ make} to build and execute FIER using the parameters outlined in \textit{deck.txt}. If all goes well, you should see printed confirmation at each program step (i.e., import, build, calculate, and write).
+    \item The four output files (see Appendix~\ref{outputfiles}) will be found in \textit{/output}, unless the names and file paths were changed in the input deck.
+    \item If \texttt{make} fails for any reason, you can manually build and run FIER with the commands:
+    \begin{itemize}
+        \item \texttt{\$ g++ -o fier.exe main.cpp species\_data.o helper\_functions.o\\ chains\_data.o product\_data.o monte\_carlo.o}
+        \item \texttt{\$ ./fier.exe deck.txt}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Documentation}
+FIER uses Doxygen to document the code. Users can compile this and read it with any html reader. To generate this, use make from within the main directory. This requires both Doxygen and the Graphviz package to be installed.
+\begin{itemize}
+    \item Mac/Linux users can type \texttt{\$ make docs}
+    \item Windows users can type \texttt{\$ make docsw}
+    \end{itemize}
+    After generation has finished, \textit{index.html} will take you to the front page. The folder \textit{html} contains all the documentation source pages.
+
+
+\section{Advanced Modes of Operation}
+\subsection{Library Corrections}
+\label{libcorrections}
+Accuracy of the FIER output is limited by the accuracy of the input data. There are a few known gaps in the ENDF data library. Although these are mostly negligible in impact, FIER comes with the capacity to address some of the more obvious omissions and discrepancies. This optional feature can be activated in the input deck by editing the second line to read ON DECAY PREDICTION. To turn it off, replace ON with OFF. This will perform several corrections to the included ENDF data, detailed below.
+
+\subsubsection{Decay Prediction}
+Due to experimental limitations, some isotopes far from the valley of stability have not had their $\beta$-delayed particle emission branching ratios measured. Although these species are expected to be $100\%$ $\beta$ emitters (with an unknown $n$/$p$ emission branch), ENDF does not record a decay mode in the decays.csv file. This will result in FIER treating these isotopes as stable in default mode. With the Decay Prediction Mode, FIER can check for isotopes with non-zero half-lives (unstable) and fill in the missing decay modes as a $\beta$- or $\beta$+ reaction depending on whether the nuclei are neutron-rich or proton-rich, respectively.
+
+\subsubsection{Decay Mode Degeneracy}
+Rarely, an ENDF isotope will have duplicate decay modes listed. FIER detects this by checking to see if an isotope's listed decay modes share daughter isotopes. If they do, the Decay Prediction Mode removes all duplicate modes to prevent double counting of daughter populations. The total branching to the one daughter is conserved by adding the branching ratios of the degenerate decay modes together. 
+
+\subsubsection{Normalized Branching Ratios}
+Although physically isotope decay branching ratios should sum to $100\%$, there are a few cases in ENDF where this is not the case. As a result, FIER will normalize the sum of all listed branching ratios for an isotope to $100\%$. 
+
+\subsection{Monte Carlo Error Analysis}
+FIER includes a built-in Monte Carlo error analysis tool. With it, users can determine the uncertainty of decay product populations and delayed $\gamma$-ray emission uncertainties on a species-by-species basis. In FIER, this is achieved by resampling the input nuclear data parameters assuming a Gaussian distribution with a width determined by the uncertainties specified in the input libraries. Each distribution sample is then used to create a new set of nuclear data inputs and run through the FIER process. Each of these sample trials are aggregated and the standard deviation in the outputs are given as the uncertainties in the centroid calculation (see Appendix~\ref{outputfiles}).
+
+\subsubsection{Bourne-Compatible Shells}
+
+\textbf{This will only work on setups that can read .sh files}. If that isn't possible, use the method described in Sec.~\ref{nobash}.
+\\\\
+To decrease wall clock time, FIER was adapted to run in Monte Carlo mode on multiple processors simultaneously. To run, type:
+\\\\
+\texttt{\$ make montecarlo}
+\\\\
+The program will then list the number of cores on your system. Input how many you wish to use and how many trials you wish to run, and then sit back and wait. A large number of trials will be very memory intensive, so if you see the program hang or crash, try lowering the number of trials. You do not need to edit the input deck for this feature. 
+\\\\
+While FIER runs in this mode, you should see an update every 100 trials. Each core will print data, which may appear intermixed and out of order; this is normal behavior. You will know that it finished successfully if FIER prints \texttt{joining thread:X} for each core you chose to use. The output with uncertainty will be stored in \textit{threads/stdevs/} in an appropiately labeled .csv file. If you wish to see the output of the calculations of any single processor, each of these are stored in \textit{threads/gammas/} or \textit{threads/populations/}.
+
+\subsubsection{Instructions for .sh Incompatible Systems}
+\label{nobash}
+For users on other platforms, replace SINGLE with MONTECARLO:\textbf{X} in the first line of the input deck (Appendix~\ref{inputdeck}), where \textbf{X} is the number of trials you wish to run. This will produce the Monte Carlo derived uncertainties directly in the output file indicated by the input deck. This is much slower than the previous method, but will work on Windows systems.
+
+\section{Testing}
+The included unit test checks a sample deck modeling the decay of $^{235}$U irradiated with fission-spectrum neutrons against pre-made output. The test also checks that no negative populations are produced and that the population tracking between time steps is properly implemented. Provided the contents of the \textit{/testing} folder have not been modified, the test can be run with: \\\\
+\texttt{\$ make test}
+\\\\
+\noindent This will build and run FIER on \textit{/testing/testdeck.txt}, \textit{/testing/testdeck2.txt}, \textit{/testing/testdeck3.txt}, and \textit{/testing/testdeck4.txt}. This produces output at \textit{/testing/output} and then checks for differences with reference output located at \textit{/testing/reference}. If there are any differences or an output file fails to be created, the testing program will print an error message to the terminal and the line. If no discrepancies are detected, FIER was built correctly. \\
+
+\section{Notes on Floating Point Precision}
+Due to limitations on the way computers represent floating point numbers, there is a limit on the number of decimal places that FIER can work with. For the most part, this limit is never reached. However during the calculation of populations using the continuous production equation, the numerator terms containing $1 - e^{-\lambda t}$ may be calculated with significant numerical error when the argument, $-\lambda t$, becomes small enough that $e^{-\lambda t}$ approaches $1$. As a result, these terms in the summation have large numerical error and the result of the summation becomes inaccurate. This can lead to negative populations being calculated. \\
+
+\noindent As a remedy to this, FIER checks when the value of $e^{-\lambda t}$ in the continuous production calculations approaches the value of $1$ within \textit{single} precision error (while the calculations FIER performs are done in \textit{double} precision). If it does, the nuclear species in question is treated as stable and all subsequent species in the decay chain are given $0$ population. Please note that this approach has limitations. With very short irradiation periods, the populations of short-lived species are calculated with large numerical error. 
+\newpage
+\begin{thebibliography}{999}
+
+\bibitem{bateman}
+H. Bateman, Solution of a system of differential equations occurring in the theory of radio-active transformations, Proc. Cambridge Philos. Soc. 15 (1910) 423-427. 
+\bibitem{fierpaper}
+E.F. Matthews, B.L. Goldblum, et al., FIER: Software for analytical modeling of delayted gamma-ray spectra, Nucl. Instrum. Meth. A 891 (2018) 111-117.
+\bibitem{doxygen}
+Doxygen, \url{http://www.stack.nl/~dimitri/doxygen/}
+\bibitem{endf}
+Evaluated Nuclear Data File (ENDF)
+\url{https://www.nndc.bnl.gov/exfor/endf00.jsp}
+\bibitem{SIGMA}
+NNDC SIGMA Library
+\url{https://www.nndc.bnl.gov/sigma/index.jsp}
+\bibitem{ENDFManual}
+ENDF User Manual (See File 8 for Relevant info)
+\url{https://www.nndc.bnl.gov/csewg/docs/endf-manual.pdf}
+\end{thebibliography}
+
+
+
+\begin{appendices}
+
+\newpage
+\section{Libraries}
+\label{libraries}
+In addition to the input deck (see Appendix~\ref{inputdeck}), FIER runs using three required ENDF nuclear data libraries located in \textit{/input\_data}. A yields file is also required that provides information on the independent fission yields of the target isotope.
+
+\subsection{Input Nuclear Data}\label{input}
+
+\noindent The nuclear data files (\textit{decays.csv}, \textit{isotopes.csv}, and \textit{gammas.csv}) were parsed from ENDF, File 8 \cite{endf}. Each isotope in the ENDF record was parsed to obtain information on the decay modes and branching ratios, $\gamma$-ray energies and intensities, and half-lives and decay constants. For users that wish to compile these data themselves, the parsing format can be found on p.~166 of the ENDF Manual \cite{ENDFManual}. If for some reason these files are deleted or missing, they must be re-downloaded from the repository or FIER will fail. If these files are renamed or moved, their new position must be recorded in the input deck or FIER will fail.
+\\
+
+\textbf{For the ENDF libraries, energy units are in keV and time units are in seconds.}
+\\
+
+\noindent The file \textit{decays.csv} records the decay modes and daughters of all possible isotopes. This is recorded in the comma separated format:\\
+\textbf{Zp, Ap, Ip, T, dT, BR, dBR, Zd, Ad, Id}\\
+\textbf{Zp, Ap, Ip} is the parent isotope. \textbf{Zd, Ad, Id} is the daughter isotope (I is the isomer number, 0 for ground, 1+ for higher). \textbf{T, dT} is the half-life and uncertainty. \textbf{BR, dBR} is the branching ratio and uncertainty.
+\\
+
+\noindent The file \textit{isotopes.csv} records the half-lives and energies of each isotope, in the format:\\
+\textbf{Zp, Ap, Ip, Ep, dEp, T, dT}\\
+\textbf{Ep, dEp} is the parent excitation energy and uncertainty. \textbf{T, dT} is the half-life and uncertainty.
+\\
+
+\noindent The file \textit{gammas.csv} records the gamma radiation energies for each decay, in the format:\\
+\textbf{Zp, Ap, Ip, Eg, dEg, Ig, dIg}\\
+\textbf{Eg, dEg} are the gamma energies and uncertainties. \textbf{Ig, dIg} are the gamma intensities and uncertainties.
+\\
+\subsection{Fission Yields}\label{Yields}
+There are two modes for sourcing independent fission yield data in FIER. 
+\subsubsection{Fission Yields from Library Data}
+The default mode uses a yields file obtained from the NNDC SIGMA library \cite{SIGMA} and contained in the \textit{/yields/} directory. Toggled by writing YIELDS:ER in the input deck, this mode searches the following line of the input deck for the elemental symbol, atomic number, and energy group, and then finds the file in the library matching that request. For example, if a user wanted to use the independent fission yields of $^{235}$U produced from fission spectrum irradiation, they would write ``\textbf{U,235,Fission}" in the relevant line of the input deck (no spaces!). This is detailed further in Appendix~\ref{inputdeck}.
+\\\\
+\noindent There are 5 irradiation energy groups included in the library. The energy group keywords for use in the input deck are provided in Table \ref{tab:2}. The available fissionable isotopes and irradiation energy groups are provided in Table \ref{tab:2.1}. Note: Independent fission yields for both the Am-242 ground state and Am-242m isomer are included in the library. To reference the isomer, use (\textbf{Am,242m,Thermal}).
+\\
+\\
+\begin{table}
+\centering
+\begin{tabular}{ll}
+\hline
+Keyword & Description \\ 
+\hline
+ SF & Spontaneous fission (no input particle)\\
+ Thermal & Fission induced by a neutron spectrum with a room temperature\\ &Maxwell-Boltzmann distribution \\ 
+ Fission & Fission induced by neutrons from other fission events\\ 
+ DD & Fission induced by 2.45~MeV DD neutrons \\
+ DT & Fission induced by 14.1~MeV DT neutrons \\
+ \hline
+\end{tabular}
+\caption{Independent fission yield energy groups and their input deck keywords.}
+\label{tab:2}
+\end{table}
+
+\begin{longtable}{p{.10\textwidth}p{.10\textwidth} p{.35\textwidth}}
+%\begin{table}[h]
+%\begin{tabular}{lll}
+
+%\hline ...&Continued on next page&...\\ \hline
+%\endfoot
+
+\hline
+Element&Number&Energy Group\\
+\hline
+%\endfirsthead
+    
+
+%    \hline ...&Continued from previous page&...\\ \hline
+    \endhead
+    
+ %    \endlastfoot
+     
+Th&227&Thermal\\
+Th&229&Thermal\\
+Th&232&Fission\\
+Pa&231&Fission\\
+U&232&Thermal, DT \\
+U&233&Fission, Thermal\\
+U&234&DT, Fission\\
+U&235&DT, Fission, Thermal\\
+U&236&DT, Fission\\
+U&238&DT, Fission, SF\\
+Np&237&DT, Fission, Thermal\\
+Np&238&Fission\\
+Pu&238&Fission\\
+Pu&239&DD, DT, Fission, Thermal\\
+Pu&240&DT, Fission, Thermal\\
+Pu&241&Fission, Thermal\\
+Pu&242&DT, Fission, Thermal\\
+Am&242&DT, Fission, Thermal\\
+Am&242m&Thermal\\
+Am&243&Thermal\\
+Cm&242&Fission\\
+Cm&243&Fission, Thermal\\
+Cm&244&Fission, Thermal, SF\\
+Cm&245&Thermal\\
+Cm&246&Fission, SF\\
+Cm&248&Fission, SF\\
+Cf&249&Thermal\\
+Cf&250&SF\\
+Cf&251&Thermal\\
+Cf&252&SF\\
+Es&253&SF\\
+Es&254&Thermal\\
+Fm&254&SF\\
+Fm&255&Thermal\\
+Fm&256&SF\\
+\hline
+%\end{tabular}
+\caption{Isotopes with independent fission yield data \cite{SIGMA} available in FIER and the associated energy groups.}
+\label{tab:2.1}
+%\end{table}
+\end{longtable}
+\pagebreak
+
+\subsubsection{Custom Independent Fission Yield Data}
+
+\noindent Users may also create and use their own yield files. To run FIER in this mode, replace \texttt{YIELDS:ER} with \texttt{YIELDS:FILE} and write the file path in the following line of the input deck in place of the ordered triple. This is detailed further in Appendix~\ref{inputdeck}. 
+\\\\
+Any reliable source for decay yields can be used for this file, but the format must be:
+\textbf{Z, A, I, Y, dY} where 
+\textbf{Y, dY} are the yield percentages and uncertainty for each isotope (\textbf{Z, A, I}).
+
+\noindent For example, to obtain fission yields from the NNDC SIGMA library \cite{SIGMA}:
+\begin{enumerate}
+    \item Navigate to \url{https://www.nndc.bnl.gov/sigma/index.jsp}.
+    \item Select Neutron-induced fission yields from the sub-library drop-down menu.
+    \item Select the desired element on the periodic table.
+    \item Select the desired isotope on the sidebar to the right.
+    \item In the green box to the right of the isotope, click on the link \textit{interpreted} to the right of \textit{fission yields}.
+    \item Find the table corresponding to the desired irradiation energy and then parse the information into a comma separated format.
+    \item Save this as a .csv file and place in the \textit{/input\_data} folder. In your input deck, use the flag \texttt{YIELDS:FILE} on Line 6 with the path to the new yields file on Line 7 of your input deck as \texttt{/input\_data/yourfile.csv}.
+    \item You are all set to run FIER with the new isotope! 
+\end{enumerate}
+
+
+
+
+\newpage
+\section{The Input Deck}
+\label{inputdeck}
+Table \ref{tab:my_label} details each line of the input deck, one line per row. Bold single letters (e.g., \textbf{X}) represent input variables whose possible values are detailed under the definition column. Write any terms in all caps exactly as given (e.g., for INITIALIZE, write \texttt{INITIALIZE}). White space to the right of any line is ignored. Lists of values are comma but not space separated. The keywords INITIALIZE, IRRADIATION, POPULATIONS, COUNTS, and END are required in the input deck. 
+\renewcommand*{\arraystretch}{1.5}
+    \begin{longtable}{p{.08\textwidth}p{.28\textwidth} p{.55\textwidth}} 
+    
+    \hline &Continued on next page&\\ \hline
+    \endfoot
+        
+    \hline Line \# & SYNTAX & DEFINITION \\ \hline
+    \endfirsthead
+    
+    \hline &Continued from previous page&\\ \hline
+    \endhead
+    
+     \endlastfoot
+        
+        1&MODE:\textbf{X} & If \textbf{X} = MONTECARLO \textbf{N} run Monte Carlo uncertainty analysis with \textbf{N} trials. If \textbf{X} = SINGLE omit Monte Carlo uncertainty  analysis. \\
+        2&\textbf{X} DECAY PREDICTION & If \textbf{X} = ON, decay prediction is on. If \textbf{X} = OFF, decay prediction is off. See Section \ref{libcorrections} for more information.\\
+        3&/path/to/isotopes.csv & Half-lives file input with .csv format (see isotopes.csv for example)\\
+        4&/path/to/decays.csv & Decay mode file input with .csv format (see decays.csv for example) \\
+        5&/path/to/gammas.csv & Gamma intensity file input with .csv format (see gammas.csv for example)\\
+        6&YIELDS:\textbf{X}& If \textbf{X} = ER, FIER will use an independent fission yield file in the included library, specified in the Line 7 input. If \textbf{X} = FILE, FIER will instead use a custom yields file indicated by the file path in Line 7. See Appendix~\ref{Yields} for additional details. \\
+        7&\textbf{E,A,G} & If YIELDS:\textbf{ER}, FIER will use library data for the fissionable isotope. This is specified as a \textit{space-less} ordered triple of the element symbol (\textbf{E}), the atomic number (\textbf{A}), and the fission energy group (\textbf{G}). If YIELDS:\textbf{FILE}, this line should instead be a fission yields file with .csv format (write as \textit{/path/to/yields.csv}). See Appendix~\ref{Yields} for additional details. \\
+        8&/output/chains.csv & Decay chains output file. Replace with NONE to suppress creation.\\
+        9&/output/stems.csv & Decay stems output file.\\
+        10&/output/populations.csv & Product populations output file.\\
+        11&/output/gamma\_output.csv & Gamma energy spectrum output file. \\
+        12&/output/errlog.txt & Error log\\
+        13&INITIALIZE&(Required Line) Signifies beginning of list of initial populations. Should be included even if no initial populations are specified. The initial population of any species not listed under this keyword will be assumed to be zero. \\
+14&\textbf{Z1},\textbf{A1},\textbf{I1},\textbf{POP1}&(Optional) Populations of initial species. \textbf{Z} is the atomic mass, \textbf{A} is the atomic number, \textit{I} is the isomer number. \textbf{POP} = initial population of listed isotope.\\
+&...	& \\
+&\textbf{Zn},\textbf{An},\textbf{In},\textbf{POPn}&\\
+15&IRRADIATION&(Required Line) Signifies the start of the irradiation profile. If no irradiation pattern is specified, the default is batch decay.\\
+16&\textbf{ATI1},\textbf{FR1}&(Optional) External irradiation pattern. \textbf{ATI} = absolute time interval (seconds), \textbf{FR} = fissions/second.\\
+&...&Add one per irradiation step desired\\
+&\textbf{ATIn},\textbf{FRn}&\\
+17&POPULATIONS&(Required Line) Signifies the start of population time interval lines.\\
+18&\textbf{TIME}&Add absolute time to record populations at desired times. \textbf{TIME} = time (seconds w.r.t. t = 0)\\
+19&COUNTS &(Required Line) Signifies the start of time-bin lines. \\
+20&\textbf{T1},\textbf{T2}&(Optional) \textbf{T1},\textbf{T2} start and end times of time bins in which to put integrated gamma-ray emissions.\\
+&...& \\	
+&\textbf{Tn1},\textbf{Tn2}&\\
+21&END&(Required Line) Tells FIER to stop reading time-bin lines and to end file input.\\
+       \hline 
+     \caption{Input Deck Structure}  
+     \label{tab:my_label}
+    \end{longtable}
+
+\newpage
+\noindent The following is an example of an input deck: 
+\lstinputlisting{deck.txt}
+This input deck was designed to run FIER without a Monte Carlo analysis (Line 1) (All lines here refer to the line at the example deck printed above). Decay prediction, which will intelligently guess any missing half-lives or decay daughters, is on (Line 2).
+\\\\
+The default input libraries are being used (Lines 3-5), and yields for Uranium 235 Fission are being pulled from the included library (Line 6-7).
+\\\\
+FIER will calculate decay chains, decay stems, populations, and delayed $\gamma$-ray emissions for all fission products and deposit them in the default \textit{output/} folder (Line 8-12).
+\\\\
+No initial populations are specified, so all populations are from fission (no line between Line 13 and Line 14). The target is being irradiated with a single microsecond pulse of 1e30 fission/second (Line 14-15).
+\\\\
+Populations of the products are being recorded at 5 and 10 microseconds (Lines 16-18). The counting scheme yields all gamma-emissions between 1 $\mu$s and 2000 s (Lines 19-20). The keyword END ends all line reading (Line 21). 
+
+\newpage
+
+\section{Output Files}
+\label{outputfiles}
+FIER writes four output files in .csv format. FIER will automatically create the files, but not any new directory, \textbf{so make sure the output folder that you specify exists}.
+\\\\
+The first output is a file of decay chains. This is broken into blocks separated by rows of dashed lines, where the top row of each block is the parent isotope and each column (left to right) is the \textbf{Z, A, I, Excitation Energy, Decay Constant, Branching Ratio}.
+\\\\
+The second output is a file of decay stems. This is broken into blocks separated by rows of dashed lines, where the first row is the parent isotope. Below are sub-blocks separated by rows of dashed lines where each daughter isotope in the stem is listed in order in the form \textbf{Z, A, I, Excitation Energy, Branching Ratio}.
+\\\\
+The third output is a file of the populations of all products. The first three rows hold the \textbf{Z, A, I} values for each isotope, respectively. Thus, each column is a different isotope/isomer. The fourth row is the half-life for each isotope in seconds. The fifth row is the excitation energy of each isotope in keV. The sixth row is the initial population of each isotope. Each row after that provides the population at the time specified in the first column. If run with the Monte Carlo uncertainty estimator on, each population row is followed by an \textbf{UNC} row that contains the uncertainties on the values in the row above. Otherwise, these \textbf{UNC} rows will not be present. A representative population output file is illustrated in Table~\ref{pops}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllll}
+Z & 23 & 23 & 24 & $\cdots$ \\ 
+A & 66 & 66 & 67 & $\cdots$ \\ 
+I  & 0 & 0 & 0 & $\cdots$ \\ 
+t\_1/2 (s) & 3.60E-07 & 1.00E-09 & 5.00E-02 & $\cdots$ \\ 
+t1 (s)/E (keV) & 0 & 0 & 0 & $\cdots$ \\  
+0 & 0 & 0 & 0 & $\cdots$ \\ 
+UNC & 0 & 0 & 0 & $\cdots$ \\ 
+1E-6 & 1.99E+06 & 1.06E+03 & 4.03E+11 & $\cdots$ \\ 
+UNC & 9.15E+05 & 6.53E+02 & 2.03E+11 & $\cdots$ \\ 
+$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ \\ 
+\end{tabular}
+\caption{Example of population output.}
+\label{pops}
+\end{table}
+
+\newpage
+\noindent The fourth output is a file of the number of $\gamma$-ray emission in each specified time bin. Like the population output, the first three rows are the isotope (column by column), and the fourth row is the half-life. The fifth row is the excitation energy in keV. The sixth row is the energy of the gamma emission in keV. Each subsequent row is the number of emissions in the time intervals listed in the input deck. If run with the Monte Carlo uncertainty estimator on, each gamma emission row is followed by an \textbf{UNC} row that contains the uncertainties on the values in the row above. Otherwise, these \textbf{UNC} rows will not be present. A representative $\gamma$-ray emission output file is illustrated in Table~\ref{gammas}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llllll}
+
+ & Z & 26 & 26 & 26 & $\cdots$ \\ 
+ & A & 65 & 65 & 65 & $\cdots$ \\ 
+ & I  & 0 & 0 & 0 & $\cdots$ \\ 
+ & t\_1/2 (s) & 0.81 & 0.81 & 0.81 & $\cdots$ \\ 
+ & E\_level (keV) & 0 & 0 & 0 & $\cdots$ \\ 
+t0 (s) & t1 (s)/E\_gamma (keV) & 127.6 & 212.5 & 340.07 & $\cdots$ \\  
+1.00E-06 & 2000 & 2.10E+11 & 6.86E+11 & 2.90E+12 & $\cdots$ \\ 
+   & UNC & 1.53E+11 & 3.57E+11 & 1.63E+12 & $\cdots$ \\ 
+$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ \\ 
+\end{tabular}
+\caption{Example of gamma-ray emission output.}
+\label{gammas}
+\end{table}
+\end{appendices}
+
+\end{document}
+

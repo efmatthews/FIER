@@ -1,0 +1,2 @@
+Holds the temporary output from running make test. These files are then dif'd with the files
+in /ref/.

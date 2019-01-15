@@ -1,0 +1,1 @@
+Holds the aggregated standard deviations of all trials.
