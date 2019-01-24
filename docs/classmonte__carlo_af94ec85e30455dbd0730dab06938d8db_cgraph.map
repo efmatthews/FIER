@@ -1,0 +1,7 @@
+<map id="monte_carlo::import_centroid_data" name="monte_carlo::import_centroid_data">
+<area shape="rect" id="node2" href="$classproduct__data.html#a8ade58ea6b32e9d06bbfddda2307eddb" title="product_data::get_irrad\l_scheme" alt="" coords="211,5,366,47"/>
+<area shape="rect" id="node3" href="$classproduct__data.html#a633a8f03f3e04d94cc3fd482c6e18a6b" title="product_data::get_after\l_irrad" alt="" coords="211,71,367,112"/>
+<area shape="rect" id="node4" href="$classproduct__data.html#ac66b6ff32eee6d6a5765537d896d2c98" title="product_data::get_count\l_scheme" alt="" coords="207,136,370,177"/>
+<area shape="rect" id="node5" href="$classproduct__data.html#ae47a469a313f5400ce242401090a357b" title="product_data::get_populations" alt="" coords="191,202,387,229"/>
+<area shape="rect" id="node6" href="$classproduct__data.html#a9d89d1d2ae81acaab737805b7ca555d3" title="product_data::get_spectra" alt="" coords="202,253,375,279"/>
+</map>

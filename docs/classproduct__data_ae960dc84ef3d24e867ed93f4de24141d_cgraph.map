@@ -1,0 +1,9 @@
+<map id="product_data::batch_spectrum" name="product_data::batch_spectrum">
+<area shape="rect" id="node2" href="$classchains__data.html#adb404da984a7511b59ce9ded12d15451" title="chains_data::get_stems" alt="" coords="205,5,366,32"/>
+<area shape="rect" id="node3" href="$classchains__data.html#acb6d431217ac4bee71aec2f5d7d934d5" title="chains_data::get_stems_dcs" alt="" coords="191,56,380,83"/>
+<area shape="rect" id="node4" href="$classchains__data.html#a2d9c4a9faae9180f303e469de01e8162" title="chains_data::get_stems_brs" alt="" coords="192,107,379,133"/>
+<area shape="rect" id="node5" href="$classproduct__data.html#a12630c85987d0f97ff51e5cf47b9fc09" title="product_data::batch\l_rate_indef_stem" alt="" coords="217,158,354,199"/>
+<area shape="rect" id="node6" href="$classspecies__data.html#ae4896829cb0dda2fd712ae0c61e113df" title="species_data::n_gammas" alt="" coords="200,224,371,251"/>
+<area shape="rect" id="node7" href="$classspecies__data.html#adf04811ad88f44969212eac103b4ed67" title="species_data::get_gamma\l_intensity" alt="" coords="198,275,373,317"/>
+<area shape="rect" id="node8" href="$classspecies__data.html#a7d4b45c4ec5941f0e65026204a995041" title="species_data::get_gamma\l_energy" alt="" coords="198,341,373,382"/>
+</map>

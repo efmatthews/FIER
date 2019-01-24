@@ -1,0 +1,6 @@
+<map id="chains_data::get_products" name="chains_data::get_products">
+<area shape="rect" id="node2" href="$classmonte__carlo.html#ae8be889055bf674ee32a21e80bb358dd" title="monte_carlo::import\l_chains_data" alt="" coords="426,5,563,47"/>
+<area shape="rect" id="node4" href="$classproduct__data.html#aeb36e9cc368949518711a640ab30f7c4" title="product_data::import\l_chains_data" alt="" coords="228,64,369,105"/>
+<area shape="rect" id="node3" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="620,71,671,98"/>
+<area shape="rect" id="node5" href="$classmonte__carlo.html#aee8c0125116a3231fb8f507a67f5c38f" title="monte_carlo::run_trials" alt="" coords="417,122,572,149"/>
+</map>

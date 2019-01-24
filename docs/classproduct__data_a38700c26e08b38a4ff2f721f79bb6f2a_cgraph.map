@@ -1,0 +1,7 @@
+<map id="product_data::batch_decay" name="product_data::batch_decay">
+<area shape="rect" id="node2" href="$classchains__data.html#adb404da984a7511b59ce9ded12d15451" title="chains_data::get_stems" alt="" coords="205,5,366,32"/>
+<area shape="rect" id="node3" href="$classchains__data.html#acb6d431217ac4bee71aec2f5d7d934d5" title="chains_data::get_stems_dcs" alt="" coords="191,56,380,83"/>
+<area shape="rect" id="node4" href="$classchains__data.html#a2d9c4a9faae9180f303e469de01e8162" title="chains_data::get_stems_brs" alt="" coords="192,107,379,133"/>
+<area shape="rect" id="node5" href="$classproduct__data.html#a3bb58c61c0873dd1f2afdc4b66d6ae1f" title="product_data::batch\l_decay_stem" alt="" coords="217,158,354,199"/>
+<area shape="rect" id="node6" href="$classproduct__data.html#ac710f8105a7a9b64cb58e3b743a8abb7" title="product_data::get_population" alt="" coords="191,224,380,251"/>
+</map>

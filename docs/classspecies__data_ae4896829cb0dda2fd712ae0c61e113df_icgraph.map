@@ -1,0 +1,9 @@
+<map id="species_data::n_gammas" name="species_data::n_gammas">
+<area shape="rect" id="node2" href="$classmonte__carlo.html#ae45e84d1ec09dbfd0d6665f91191fc96" title="monte_carlo::calculate\l_stdevs" alt="" coords="409,5,563,47"/>
+<area shape="rect" id="node4" href="$classmonte__carlo.html#a45ec21f407e686bfd502042e243343f4" title="monte_carlo::save_spectra" alt="" coords="611,63,789,90"/>
+<area shape="rect" id="node5" href="$classproduct__data.html#ae960dc84ef3d24e867ed93f4de24141d" title="product_data::batch\l_spectrum" alt="" coords="224,123,361,164"/>
+<area shape="rect" id="node8" href="$classproduct__data.html#a1be988686468536ff15b9c5ba87dec29" title="product_data::save\l_spectra" alt="" coords="226,197,359,239"/>
+<area shape="rect" id="node3" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="837,114,888,141"/>
+<area shape="rect" id="node6" href="$classproduct__data.html#a90bea1d216b4abfbf60ed46b59cf2ee5" title="product_data::batch\l_spectrum_all" alt="" coords="417,123,555,164"/>
+<area shape="rect" id="node7" href="$classmonte__carlo.html#aee8c0125116a3231fb8f507a67f5c38f" title="monte_carlo::run_trials" alt="" coords="623,165,777,191"/>
+</map>

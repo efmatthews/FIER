@@ -1,0 +1,7 @@
+<map id="monte_carlo::save_spectra" name="monte_carlo::save_spectra">
+<area shape="rect" id="node2" href="$helper__functions_8cpp.html#a03fae023b80c0806fb5e7353e9b473b8" title="get_keys" alt="" coords="282,5,357,32"/>
+<area shape="rect" id="node3" href="$classspecies__data.html#ae4896829cb0dda2fd712ae0c61e113df" title="species_data::n_gammas" alt="" coords="234,56,405,83"/>
+<area shape="rect" id="node4" href="$classspecies__data.html#ae56d837fa1938596069a7adc365bc443" title="species_data::get_halflife" alt="" coords="234,107,405,133"/>
+<area shape="rect" id="node5" href="$classspecies__data.html#a85459264ad8ba2cbf2af00b71aa47383" title="species_data::get_energy" alt="" coords="234,157,405,184"/>
+<area shape="rect" id="node6" href="$classspecies__data.html#a7d4b45c4ec5941f0e65026204a995041" title="species_data::get_gamma\l_energy" alt="" coords="232,209,407,250"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="product_data::cont_prod" name="product_data::cont_prod">
+<area shape="rect" id="node2" href="$classchains__data.html#adb404da984a7511b59ce9ded12d15451" title="chains_data::get_stems" alt="" coords="230,5,391,32"/>
+<area shape="rect" id="node3" href="$classchains__data.html#acb6d431217ac4bee71aec2f5d7d934d5" title="chains_data::get_stems_dcs" alt="" coords="216,56,405,83"/>
+<area shape="rect" id="node4" href="$classchains__data.html#a2d9c4a9faae9180f303e469de01e8162" title="chains_data::get_stems_brs" alt="" coords="217,107,404,133"/>
+<area shape="rect" id="node5" href="$classproduct__data.html#acd9fb954080d2463861bada5193c5431" title="product_data::cont\l_prod_stem" alt="" coords="245,158,376,199"/>
+<area shape="rect" id="node7" href="$classproduct__data.html#ac710f8105a7a9b64cb58e3b743a8abb7" title="product_data::get_population" alt="" coords="216,224,405,251"/>
+<area shape="rect" id="node6" href="$classspecies__data.html#aa6e5b18184515720874988fb0aafd952" title="species_data::get_yield" alt="" coords="453,165,612,192"/>
+</map>
