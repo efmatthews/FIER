@@ -72,7 +72,7 @@ This produces a library of yields in the format of Z, A, FPS, Yield, Uncertainty
 
 ### Cite This Work ###
 
-* Please cite the FIER manuscript published in NIM-A if you use FIER if your published work! A BibTeX file for this manuscript can be found in the file FIER_NIMA.bib. 
+* Please cite the FIER manuscript published in NIM-A if you use FIER in your published work! A BibTeX file for this manuscript can be found in the file FIER_NIMA.bib. 
 
 
 ### Contribution Guidelines ###
