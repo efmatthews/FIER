@@ -4,6 +4,8 @@
 
 * This repository is used for the storage of and collaboration on the FIER (Fission Induced Electromagnetic Response) code.
 
+* For more details on FIER, please see our website: bang.berkeley.edu/fier
+
 * Use C++ 2011 or higher. 
 
 * The FIER code is stored in the FIER directory.
