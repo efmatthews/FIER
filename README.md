@@ -17,7 +17,7 @@
 
 * Because the program was written in C++, make sure you have access to a C++ compilier, g++ on unix systems is most commonly used.
 
-* Download FIER (FIER\_v1.cpp). To run the code open the terminal and enter the bash command: `make`
+* Download FIER. To run the code open the terminal and enter the bash command: `make`
 
 * FIER takes an input deck argument. Running `make` will call the default (but editable) input deck: FIER/deck.txt
 
