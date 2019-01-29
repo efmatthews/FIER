@@ -79,7 +79,7 @@ This produces a library of yields in the format of Z, A, FPS, Yield, Uncertainty
 
 ### Contribution Guidelines ###
 
-* Experimental work is done on the FIER branch. Production code is hosted in the Master branch. Once FIER-branch work has been tested to satisfaction, merge FIER into Master.
+* To contribute to this project please submit a pull request. Once the request has been appropriately reviewed and accepted, your contribution will be merged. 
 
 
 
