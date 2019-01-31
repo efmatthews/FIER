@@ -22,6 +22,8 @@ In addition, these tools are highly recommended:
 * `doxygen` and `graphviz`, to compile documentation, and
 * a Bourne-compatible shell, to run the multiprocess Monte Carlo analysis.
 
+Basic setup:
+
 * Download FIER. To run the code open the terminal and enter the bash command: `make`
 
 * FIER takes an input deck argument. Running `make` will call the default (but editable) input deck: FIER/deck.txt
