@@ -2,20 +2,25 @@
 
 ### The FIER Repository ###
 
-* This repository is used for the storage of and collaboration on the FIER (Fission Induced Electromagnetic Response) code.
+The FIER (Fission Induced Electromagnetic Response) code is a C++ program designed to predict delayed gamma-ray spectra following fission. Given a fissioning isotope and irradiation scheme, FIER will determine the decay chains for each fission fragment and their daughters. Each product’s time-dependent population is calculated using an analytical solution to the Bateman equations that guide decay transmutation. These populations are then used to calculate the number of γ-ray emissions for a given counting scheme. A Monte Carlo method is also available to determine the uncertainty of the fission product populations and delayed gamma-ray intensities based on the uncertainties on the input nuclear data.
 
 * For more details on FIER, please see our website: https://bang.berkeley.edu/fier
-
-* Use C++ 2011 or higher. 
-
-* The FIER code is stored in the FIER directory.
 
 * For a detailed walkthrough of building and running FIER, compile (with LaTeX) and read FIER\_Manual\main.pdf. A makefile is included to build the LaTeX manual. 
 
 ### Set Up ###
+
 * All code is in the FIER directory.
 
-* Because the program was written in C++, make sure you have access to a C++ compilier, g++ on unix systems is most commonly used.
+The following are required to run FIER: 
+* `C++11` or higher, and
+* the `g++` compiler.
+
+In addition, these tools are highly recommended:
+* `make`, to run the make file,
+* `git`, to pull code from the repository,
+* `doxygen` and `graphviz`, to compile documentation, and
+* a Bourne-compatible shell, to run the multiprocess Monte Carlo analysis.
 
 * Download FIER. To run the code open the terminal and enter the bash command: `make`
 
@@ -74,7 +79,7 @@ This produces a library of yields in the format of Z, A, FPS, Yield, Uncertainty
 
 ### Cite This Work ###
 
-* Please cite the FIER manuscript published in NIM-A if you use FIER in your published work! A BibTeX file for this manuscript can be found in the file FIER_NIMA.bib. 
+* Please cite the FIER manuscript published in NIM-A if you use FIER in your published work! A [BibTeX file](http://bang.berkeley.edu/wp-content/uploads/FIER_NIMA.bib) for this [manuscript](https://www.sciencedirect.com/science/article/pii/S0168900218302262?via%3Dihub) can be found in the file FIER_NIMA.bib. 
 
 
 ### Contribution Guidelines ###
